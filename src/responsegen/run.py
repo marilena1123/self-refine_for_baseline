@@ -31,10 +31,9 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 if os.getenv("OPENAI_ORG") is not None:
     openai.organization = os.getenv("OPENAI_ORG")
 
-CODEX = "code-davinci-002"
-GPT3 = "text-davinci-003"
-ENGINE = CODEX#GPT3
-ENGINE = GPT3
+from src.config import get_config
+
+ENGINE = get_config()["api"]["model"]
 
 @retry_parse_fail_prone_cmd
 def iterative_response(context: str, max_attempts: int) -> str:

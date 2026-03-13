@@ -12,14 +12,9 @@ from src.sentiment_reversal.measure import SentimentTransferMeasurement
 from src.sentiment_reversal.feedback import SentimentTransferFeedback
 from src.utils import retry_parse_fail_prone_cmd
 
-CODEX = "code-davinci-002"
-GPT3 = "text-davinci-003"
-GPT3_v2 = "text-davinci-001"
-SHADOWFIRE = "shadowfire"
-GPT4 = "gpt-4"
-CHATGPT = "gpt-3.5-turbo"
-SELF = "self-vulcan-13b"
-ENGINE = GPT4
+from src.config import get_config
+
+ENGINE = get_config()["api"]["model"]
 
 @retry_parse_fail_prone_cmd
 def iterative_prompting(

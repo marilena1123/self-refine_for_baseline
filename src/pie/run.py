@@ -8,11 +8,9 @@ from src.pie.feedback import PieFeedback
 
 from src.utils import retry_parse_fail_prone_cmd
 
-CODEX = "code-davinci-002"
-GPT3 = "text-davinci-003"
-CHATGPT = "gpt-3.5-turbo"
-GPT4 = "gpt-4"
-ENGINE = CHATGPT
+from src.config import get_config
+
+ENGINE = get_config()["api"]["model"]
 
 
 @retry_parse_fail_prone_cmd

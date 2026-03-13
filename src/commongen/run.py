@@ -7,10 +7,9 @@ from src.commongen.task_iterate import CommongenTaskIterate
 from src.commongen.feedback import CommongenFeedback
 from src.utils import retry_parse_fail_prone_cmd
 
-CODEX = "code-davinci-002"
-GPT3 = "text-davinci-003"
-CHATGPT = "gpt-3.5-turbo"
-ENGINE = GPT3
+from src.config import get_config
+
+ENGINE = get_config()["api"]["model"]
 
 
 @retry_parse_fail_prone_cmd

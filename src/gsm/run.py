@@ -7,9 +7,9 @@ from src.gsm.feedback import GSMFeedback
 
 from src.utils import retry_parse_fail_prone_cmd
 
-CODEX = "code-davinci-002"
-# GPT3 = "text-davinci-003"
-ENGINE = CODEX
+from src.config import get_config
+
+ENGINE = get_config()["api"]["model"]
 
 
 @retry_parse_fail_prone_cmd

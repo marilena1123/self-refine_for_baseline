@@ -1,0 +1,25 @@
+# Self-Refine Framework Configuration
+# =====================================
+
+# API Configuration
+api:
+  provider: "openrouter"                    # "openrouter" or "openai"
+  model: "openai/gpt-4"                    # Any OpenRouter model ID, e.g.:
+                                            #   "meta-llama/llama-3.1-70b-instruct"
+                                            #   "anthropic/claude-3.5-sonnet"
+                                            #   "openai/gpt-4"
+                                            #   "mistralai/mistral-large-latest"
+  base_url: "https://openrouter.ai/api/v1" # API endpoint
+  api_key_env: "OPENROUTER_API_KEY"         # Name of env var holding the API key
+  temperature: 0.7
+  max_tokens: 512
+
+# Task Configuration
+task:
+  max_attempts: 4                           # Max self-refine iterations
+  feedback_type: "rich"                     # "rich", "naive", "none"
+  num_samples: 0                            # 0 = all samples in dataset
+
+# Output
+output:
+  dir: "data/outputs"
