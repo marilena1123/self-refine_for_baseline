@@ -1,0 +1,27 @@
+Q: In the following sentences, explain the antecedent of the pronoun (which thing the pronoun refers to), or state that it is ambiguous.
+Sentence: The chief told the counselor that they took the day off.
+Options:
+(A) The chief took the day off
+(B) The counselor took the day off
+(C) Ambiguous
+A: Let's think step by step.
+There are two possible referents for "they": the chief or the counselor. In this sentence, it is more natural that the chief told the counselor about the chief taking the day off. The final answer is (A).
+
+Q: In the following sentences, explain the antecedent of the pronoun (which thing the pronoun refers to), or state that it is ambiguous.
+Sentence: The manager sent a message to the secretary, but he didn't reply yet.
+Options:
+(A) The secretary didn't reply yet
+(B) The manager didn't reply yet
+(C) Ambiguous
+A: Let's think step by step.
+The person who usually replies is the recipient of the message, so "he" most naturally refers to the secretary. The final answer is (A).
+
+Q: In the following sentences, explain the antecedent of the pronoun (which thing the pronoun refers to), or state that it is ambiguous.
+Sentence: Bailey will plan to meet the director at his office
+Options:
+(A) It will be Bailey's office
+(B) It will be the director's office
+(C) Ambiguous
+A: Let's think step by step.
+Both Bailey's office and the director's office are plausible, so the pronoun is ambiguous. The final answer is (C).
+

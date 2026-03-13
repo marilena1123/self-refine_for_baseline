@@ -1,0 +1,54 @@
+Q: Which statement is sarcastic?
+Options:
+(A) Yes, because having interests and actively researching them is a huge waste
+(B) Yes, because having interests and actively researching them is a huge deal
+A: Let's think step by step.
+(B) says having interests is a huge deal, which could be interpreted as genuine enthusiasm. So (B) is sarcastic. The final answer is (B).
+
+There is an error in the answer above because of a misunderstanding of the question. What is the error? To find the error, go through each option step by step and check if it is sarcastic.
+
+Let us go through the options and check step-by-step:
+- (A) "having interests and actively researching them is a huge waste": This says something obviously contrary to common sense. Having interests and researching them is generally considered positive, not a waste. This is sarcasm through stating the opposite of what is meant.
+- (B) "having interests and actively researching them is a huge deal": This is a straightforward, sincere statement. Having interests IS a big deal. This is not sarcastic.
+
+The error is that (B) is sincere, not sarcastic. The sarcastic statement is (A), which mockingly calls research a "waste."
+The final answer is (A).
+
+### END ###
+
+Q: Which statement is sarcastic?
+Options:
+(A) No one is going to disagree with you on this. Avoiding ad hominem attacks really help your case
+(B) No one is going to disagree with you on this. Ad hominem attacks really help your case
+A: Let's think step by step.
+(B) praises something that is normally bad, which signals sarcasm. The final answer is (B).
+
+There is an error in the answer above because of a misunderstanding of the question. What is the error? To find the error, go through each option step by step and check if it is sarcastic.
+
+Let us go through the options and check step-by-step:
+- (A) "Avoiding ad hominem attacks really help your case": Avoiding personal attacks is genuinely good for making a case. This is a sincere, true statement.
+- (B) "Ad hominem attacks really help your case": Ad hominem attacks do NOT help your case in reality. Saying they "really help" is saying the opposite of what is true, which is sarcasm.
+
+There is no error in the answer! It is correct! (B) is indeed sarcastic. Here is the rewrite (for the sake of completeness):
+The final answer is (B).
+
+### END ###
+
+Q: Which statement is sarcastic?
+Options:
+(A) Consistency in the league's punishments? What do you think this is supposed to be, politics?
+(B) Consistency in the league's punishments? What do you think this is supposed to be, moral?
+A: Let's think step by step.
+(B) uses a rhetorical question comparing punishments to morality, so it is sarcastic. The final answer is (B).
+
+There is an error in the answer above because of a misunderstanding of the question. What is the error? To find the error, go through each option step by step and check if it is sarcastic.
+
+Let us go through the options and check step-by-step:
+- (A) "What do you think this is supposed to be, politics?": This sarcastically compares the league to politics, implying politics is known for inconsistency. The mocking comparison signals sarcasm.
+- (B) "What do you think this is supposed to be, moral?": This is a more straightforward rhetorical question and does not carry the same mocking tone.
+
+The error is that (A) is the sarcastic statement, not (B). (A) uses a mocking comparison to politics (known for inconsistency) to humorously criticize the league's inconsistent punishments.
+The final answer is (A).
+
+### END ###
+

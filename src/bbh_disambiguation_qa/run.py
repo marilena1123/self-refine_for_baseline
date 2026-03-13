@@ -7,19 +7,32 @@ from tqdm import tqdm
 from src.bbh_disambiguation_qa.task_init import BBHDisambiguationInit
 from src.bbh_disambiguation_qa.feedback import BBHDisambiguationFeedback
 from src.bbh_utils import load_bbh_data, answers_match
+from src.utils import retry_parse_fail_prone_cmd
 from src.config import get_config
 
+ENGINE = get_config()["api"]["model"]
 
-def iterative_disambiguation(question, target, max_attempts):
-    task_init = BBHDisambiguationInit()
-    task_feedback = BBHDisambiguationFeedback()
 
-    reasoning, answer = task_init(question)
+@retry_parse_fail_prone_cmd
+def iterative_disambiguation(question, target, max_attempts, temperature):
+    task_init = BBHDisambiguationInit(
+        engine=ENGINE,
+        prompt_examples="data/prompt/bbh_disambiguation_qa/init.txt",
+        temperature=temperature,
+    )
+    task_feedback = BBHDisambiguationFeedback(
+        engine=ENGINE,
+        prompt_examples="data/prompt/bbh_disambiguation_qa/feedback.txt",
+        temperature=0.7,
+    )
 
-    log = []
     n_attempts = 0
+    log = []
 
     while n_attempts < max_attempts:
+        if n_attempts == 0:
+            reasoning, answer = task_init(question)
+
         fb = task_feedback(
             question=question,
             current_answer=answer,
@@ -47,7 +60,7 @@ def iterative_disambiguation(question, target, max_attempts):
     return log
 
 
-def run(data_file, max_attempts, num_samples, outfile):
+def run(data_file, max_attempts, num_samples, outfile, temperature):
     examples = load_bbh_data(data_file, num_samples)
     results = []
 
@@ -57,7 +70,9 @@ def run(data_file, max_attempts, num_samples, outfile):
 
         print(f"\n[{i}] Q: {question[:80]}... Target: {target}")
         try:
-            log = iterative_disambiguation(question, target, max_attempts)
+            log = iterative_disambiguation(question, target, max_attempts, temperature)
+            if log is None:
+                log = [{"attempt": 0, "error": "retry_parse_fail_prone_cmd returned None"}]
         except Exception as e:
             print(f"  Error: {e}")
             log = [{"attempt": 0, "error": str(e)}]
@@ -70,8 +85,8 @@ def run(data_file, max_attempts, num_samples, outfile):
             "generated_answer_ours": log[-1].get("refined_answer", log[-1].get("answer", "")),
         })
 
-        if i % 20 == 0 and i > 0:
-            pd.DataFrame(results).to_json(f"{outfile}.checkpoint.{i}.jsonl", orient="records", lines=True)
+        if i % 10 == 0 and i > 0:
+            pd.DataFrame(results).to_json(f"{outfile}.{i}.jsonl", orient="records", lines=True)
 
     pd.DataFrame(results).to_json(outfile, orient="records", lines=True)
     print(f"\nResults saved to {outfile}")
@@ -84,13 +99,13 @@ def run(data_file, max_attempts, num_samples, outfile):
 
 
 if __name__ == "__main__":
-    cfg = get_config()
-
     parser = argparse.ArgumentParser(description="BBH Disambiguation QA Self-Refine")
     parser.add_argument("--data_file", type=str, default="data/tasks/bbh_disambiguation_qa/disambiguation_qa.json")
-    parser.add_argument("--max_attempts", type=int, default=cfg["task"]["max_attempts"])
-    parser.add_argument("--num_samples", type=int, default=cfg["task"]["num_samples"])
+    parser.add_argument("--max_attempts", type=int, default=4)
+    parser.add_argument("--num_samples", type=int, default=0)
     parser.add_argument("--outfile", type=str, default="data/outputs/bbh_disambiguation_qa_results.jsonl")
+    parser.add_argument("--temperature", type=float, default=0.0)
     args = parser.parse_args()
+    args.outfile = f"{args.outfile}.temp_{args.temperature}.engine_{ENGINE}.jsonl"
 
-    run(args.data_file, args.max_attempts, args.num_samples, args.outfile)
+    run(args.data_file, args.max_attempts, args.num_samples, args.outfile, args.temperature)
