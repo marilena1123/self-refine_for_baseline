@@ -1,6 +1,7 @@
 """Runner for BBH Object Counting self-refine task."""
 
 import argparse
+import os
 import pandas as pd
 from tqdm import tqdm
 
@@ -61,6 +62,7 @@ def iterative_object_counting(question, target, max_attempts, temperature):
 
 
 def run(data_file, max_attempts, num_samples, outfile, temperature):
+    os.makedirs(os.path.dirname(outfile), exist_ok=True)
     examples = load_bbh_data(data_file, num_samples)
     results = []
 
