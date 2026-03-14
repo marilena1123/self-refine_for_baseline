@@ -27,7 +27,13 @@ def normalize_answer(answer: str) -> str:
 
 
 def evaluate(results_file: str):
-    df = pd.read_json(results_file, lines=True, orient="records")
+    import json
+    with open(results_file, "r") as f:
+        content = f.read().strip()
+    if content.startswith("["):
+        df = pd.DataFrame(json.loads(content))
+    else:
+        df = pd.read_json(results_file, lines=True, orient="records")
 
     total = len(df)
     if total == 0:

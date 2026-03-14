@@ -149,6 +149,31 @@ class BBHTaskIterate(Prompt):
         return answer.strip()
 
 
+def _load_task_data(task_file: str) -> pd.DataFrame:
+    """Load task data from JSON (array) or JSONL (line-delimited) format."""
+    import json
+    with open(task_file, "r") as f:
+        content = f.read().strip()
+    if content.startswith("["):
+        data = pd.DataFrame(json.loads(content))
+    else:
+        data = pd.read_json(task_file, lines=True, orient="records")
+
+    # Auto-detect input column name
+    if "input" not in data.columns:
+        for candidate in ["question", "text", "prompt", "problem", "sentence"]:
+            if candidate in data.columns:
+                data = data.rename(columns={candidate: "input"})
+                break
+        else:
+            # Use first non-target column
+            non_target = [c for c in data.columns if c != "target"]
+            if non_target:
+                data = data.rename(columns={non_target[0]: "input"})
+
+    return data
+
+
 def run_bbh_task(
     task_init: BBHTaskInit,
     task_feedback: BBHFeedback,
@@ -158,7 +183,7 @@ def run_bbh_task(
     outfile: str,
 ):
     """Generic runner for BBH tasks."""
-    data = pd.read_json(task_file, lines=True, orient="records")
+    data = _load_task_data(task_file)
     results = []
 
     for i, row in tqdm(data.iterrows(), total=len(data)):
