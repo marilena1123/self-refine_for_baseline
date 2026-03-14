@@ -1,5 +1,6 @@
 import re
 import argparse
+import pandas as pd
 
 from src.object_counting.task_init import ObjectCountingTaskInit
 from src.object_counting.task_iterate import ObjectCountingTaskIterate
