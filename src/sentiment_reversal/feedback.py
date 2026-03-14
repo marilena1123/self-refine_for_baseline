@@ -77,7 +77,7 @@ Feedback: {feedback}
 """
 
 import sys
-from prompt_lib.backends import router
+from src import api_wrapper as router
 
 from src.utils import Prompt
 

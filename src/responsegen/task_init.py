@@ -2,7 +2,7 @@ import pandas as pd
 from src.utils import Prompt
 from typing import List, Optional, Union
 import sys
-from prompt_lib.backends import openai_api
+from src import api_wrapper as openai_api
 
 
 class ResponseGenTaskInit(Prompt):

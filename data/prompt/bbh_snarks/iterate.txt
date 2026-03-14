@@ -1,0 +1,13 @@
+Which statement is sarcastic?
+
+Q: Options:
+(A) Yes, because having interests and actively researching them is a huge waste
+(B) Yes, because having interests and actively researching them is a huge deal
+Previous answer: B
+Feedback: Let's reconsider. Option (A) says having interests is "a huge waste" — this is clearly not sincere, since having interests is generally seen as positive. It's using irony to mock someone, making it sarcastic. Option (B) says it's "a huge deal," which is a more genuine statement. So the sarcastic one is (A), not (B). The answer is incorrect.
+
+Based on the feedback, provide the corrected answer.
+A: A
+
+###
+

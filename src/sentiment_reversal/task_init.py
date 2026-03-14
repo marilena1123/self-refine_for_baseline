@@ -4,7 +4,7 @@ import pandas as pd
 
 from src.utils import Prompt
 
-from prompt_lib.backends import router
+from src import api_wrapper as router
 
 
 class SentimentTransferTaskInit(Prompt):

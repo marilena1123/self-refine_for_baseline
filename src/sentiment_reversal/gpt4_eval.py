@@ -9,7 +9,7 @@ import pandas as pd
 from typing import List, Dict
 import tiktoken
 import random
-from prompt_lib.backends import openai_api
+from src import api_wrapper as openai_api
 from tqdm import tqdm
 
 random.seed(42)

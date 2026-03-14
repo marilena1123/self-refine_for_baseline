@@ -1,7 +1,7 @@
 import pandas as pd
 from src.utils import Prompt
 
-from prompt_lib.backends import openai_api
+from src import api_wrapper as openai_api
 
 
 class AcronymGenTaskInit(Prompt):

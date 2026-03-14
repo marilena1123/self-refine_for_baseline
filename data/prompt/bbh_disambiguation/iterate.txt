@@ -1,0 +1,13 @@
+Q: Sentence: The chief told the counselor that they took the day off.
+Options:
+(A) The chief took the day off
+(B) The counselor took the day off
+(C) Ambiguous
+Previous answer: B
+Feedback: Let's re-examine. "They" could refer to either the chief or the counselor. However, in context, when someone "tells" another person that "they took the day off," the pronoun "they" most naturally refers to the subject who is telling — the chief. So the answer should be (A). The answer is incorrect.
+
+Based on the feedback, provide the corrected answer.
+A: A
+
+###
+

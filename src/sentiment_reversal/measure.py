@@ -1,5 +1,5 @@
 from src.utils import Prompt
-from prompt_lib.backends import router
+from src import api_wrapper as router
 
 class SentimentTransferMeasurement(Prompt):
     def __init__(self, engine) -> None:

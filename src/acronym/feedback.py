@@ -1,5 +1,5 @@
 import pandas as pd
-from prompt_lib.backends import openai_api
+from src import api_wrapper as openai_api
 
 from src.utils import Prompt
 

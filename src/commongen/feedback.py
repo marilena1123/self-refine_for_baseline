@@ -1,7 +1,7 @@
 import re
 from typing import Set, List
 import pandas as pd
-from prompt_lib.backends import openai_api
+from src import api_wrapper as openai_api
 import nltk
 import spacy
 
