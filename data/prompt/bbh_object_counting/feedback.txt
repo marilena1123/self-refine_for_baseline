@@ -12,3 +12,10 @@ Let's verify step by step. The items are: orange (1), raspberry (1), two peaches
 
 ###
 
+Q: I have a lettuce head, a head of broccoli, an onion, a stalk of celery, two carrots, a garlic, and a yam. How many vegetables do I have?
+Proposed answer: 8
+
+Let's verify step by step. The items are: lettuce head (1), head of broccoli (1), onion (1), stalk of celery (1), two carrots (2), garlic (1), yam (1). All are vegetables. Total: 1+1+1+1+2+1+1 = 8. The answer is correct.
+
+###
+

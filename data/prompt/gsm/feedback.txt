@@ -1,5 +1,5 @@
 def solution():
-    """Kelly is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her 5 packs of bacon cost $10 in total and she has 6 packets of chicken which each cost twice as much as a pack of bacon. She also has 3 packs of strawberries, priced at $4 each, and 7 packs of apples, each priced at half the price of a pack of strawberries. If Kelly’s budget is $65 then how much money, in dollars, does she have left in her budget?"""
+    """Kelly is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her 5 packs of bacon cost $10 in total and she has 6 packets of chicken which each cost twice as much as a pack of bacon. She also has 3 packs of strawberries, priced at $4 each, and 7 packs of apples, each priced at half the price of a pack of strawberries. If Kelly's budget is $65 then how much money, in dollars, does she have left in her budget?"""
     budget = 65
     bacon = 5
     bacon_cost = 10
@@ -52,7 +52,7 @@ money_left = budget - total_cost
 Okay! Here is the rewrite:
 
 def solution():
-    """Kelly is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her 5 packs of bacon cost $10 in total and she has 6 packets of chicken which each cost twice as much as a pack of bacon. She also has 3 packs of strawberries, priced at $4 each, and 7 packs of apples, each priced at half the price of a pack of strawberries. If Kelly’s budget is $65 then how much money, in dollars, does she have left in her budget?"""
+    """Kelly is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her 5 packs of bacon cost $10 in total and she has 6 packets of chicken which each cost twice as much as a pack of bacon. She also has 3 packs of strawberries, priced at $4 each, and 7 packs of apples, each priced at half the price of a pack of strawberries. If Kelly's budget is $65 then how much money, in dollars, does she have left in her budget?"""
     budget = 65
     num_bacon_packs = 5
     bacon_total_cost = 10
@@ -154,56 +154,6 @@ def solution():
     cards_c = cards_left * 5 / 8
     cards_d = cards_left * 3 / 8
     result = cards_d
-    return result
-
-### END ###
-
-def solution():
-    """Milo is making a mosaic with chips of glass. It takes twelve glass chips to make every square inch of the mosaic. A bag of glass chips holds 72 chips. Milo wants his mosaic to be three inches tall. If he has two bags of glass chips, how many inches long can he make his mosaic?"""
-    chips_per_inch = 12
-    chips_per_bag = 72
-    bags = 2
-    height = 3
-    chips_needed = height * chips_per_inch
-    chips_available = bags * chips_per_bag
-    chips_left = chips_available - chips_needed
-    length = chips_left / chips_per_inch
-    result = length
-    return result
-
-# There is an error in the code above because of lack of understanding of the question. What is the error? To find the error, go through semantically complete blocks of the code, and check if everything looks good.
-
-# Let us go through the error and check step-by-step
-
-    chips_per_inch = 12
-# looks good
-
-# Let's check the other parts
-    chips_per_bag = 72
-    bags = 2
-# looks good
-
-# Let's check the other parts
-    height = 3
-# looks good
-
-# Let's check the other parts
-    chips_needed = height * chips_per_inch
-    chips_available = bags * chips_per_bag
-# wrong! 12 chips per *sqare inch*, not per inch. Need to calculate square inches he can build with chips_available. Then, divide that by the desired height to get the length. That will be chips_needed, not chips_available. The rest of the code is incorrect as a result.
-
-Okay! Here is the rewrite:
-
-def solution():
-    """Milo is making a mosaic with chips of glass. It takes twelve glass chips to make every square inch of the mosaic. A bag of glass chips holds 72 chips. Milo wants his mosaic to be three inches tall. If he has two bags of glass chips, how many inches long can he make his mosaic?"""
-    chips_per_inch = 12
-    chips_per_bag = 72
-    bags = 2
-    height = 3
-    chips_available = bags * chips_per_bag
-    square_inches_available = chips_available / chips_per_inch
-    length = square_inches_available / height
-    result = length
     return result
 
 ### END ###

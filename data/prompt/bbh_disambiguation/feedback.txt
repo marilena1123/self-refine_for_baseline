@@ -20,3 +20,14 @@ Let's re-examine. "His" could refer to either Bailey or the director. Without ad
 
 ###
 
+Q: Sentence: The manager sent a message to the secretary, but he didn't reply yet.
+Options:
+(A) The secretary didn't reply yet
+(B) The manager didn't reply yet
+(C) Ambiguous
+Proposed answer: A
+
+Let's re-examine. The manager sent a message, so the manager is the sender. "He didn't reply yet" most naturally refers to the person who received the message — the secretary. The secretary is the one expected to reply. The answer (A) is correct. The answer is correct.
+
+###
+
