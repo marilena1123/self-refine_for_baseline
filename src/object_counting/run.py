@@ -1,29 +1,24 @@
 import re
+import argparse
 import pandas as pd
 
 from src.object_counting.task_init import ObjectCountingTaskInit
 from src.object_counting.task_iterate import ObjectCountingTaskIterate
 from src.object_counting.feedback import ObjectCountingFeedback
 from src.utils import retry_parse_fail_prone_cmd
-
-CODEX = "code-davinci-002"
-GPT3 = "text-davinci-003"
-CHAT_GPT = "gpt-3.5-turbo"
-GPT4 = "gpt-4"
-
-ENGINE = CHAT_GPT
+from config import DEFAULT_MODEL, DEFAULT_MAX_ATTEMPTS, DEFAULT_N_SAMPLES
 
 
 @retry_parse_fail_prone_cmd
-def iterative_object_counting(input_text: str, max_attempts: int) -> dict:
+def iterative_object_counting(input_text: str, max_attempts: int, engine: str) -> dict:
     task_init = ObjectCountingTaskInit(
-        engine=ENGINE, prompt_examples="data/prompt/object_counting/init.jsonl"
+        engine=engine, prompt_examples="data/prompt/object_counting/init.jsonl"
     )
     task_feedback = ObjectCountingFeedback(
-        engine=ENGINE, prompt_examples="data/prompt/object_counting/feedback.jsonl"
+        engine=engine, prompt_examples="data/prompt/object_counting/feedback.jsonl"
     )
     task_iterate = ObjectCountingTaskIterate(
-        engine=ENGINE, prompt_examples="data/prompt/object_counting/feedback.jsonl"
+        engine=engine, prompt_examples="data/prompt/object_counting/feedback.jsonl"
     )
 
     n_attempts = 0
@@ -66,43 +61,85 @@ def iterative_object_counting(input_text: str, max_attempts: int) -> dict:
     return all_answers_to_scores
 
 
-def run_over_data(input_file: str, max_attempts: int, outfile: str):
-    def _parse_results(input_text: str) -> str:
-        try:
-            results = iterative_object_counting(
-                input_text=input_text, max_attempts=max_attempts
-            )
-            if results is None:
-                return "FAILED"
-            res = []
-            for answer, info in results.items():
-                res.append(f"{answer} [score: {info['total_score']}]\n{info['scores']}")
-            return "\n ------ \n".join(res)
-        except Exception as e:
-            return "FAILED"
-
+def run_over_data(
+    input_file: str,
+    max_attempts: int,
+    outfile: str,
+    engine: str,
+    n_samples: int = None,
+):
     data = pd.read_json(input_file, orient="records", lines=True)
-    data["generated_answer"] = data["input"].apply(_parse_results)
-    data.to_json(outfile, orient="records", lines=True)
+    if n_samples is not None:
+        data = data.head(n_samples)
+
+    results = []
+    for _, row in data.iterrows():
+        try:
+            logs = iterative_object_counting(
+                input_text=row["input"],
+                max_attempts=max_attempts,
+                engine=engine,
+            )
+            row_out = row.to_dict()
+            row_out["run_logs"] = logs
+            best = max(logs.values(), key=lambda x: x["total_score"])
+            row_out["generated_answer"] = best["input"] + " -> " + list(
+                k for k, v in logs.items() if v["total_score"] == best["total_score"]
+            )[-1]
+        except Exception as e:
+            row_out = row.to_dict()
+            row_out["run_logs"] = "FAILED"
+            row_out["generated_answer"] = "FAILED"
+            print(f"FAILED: {e}")
+        results.append(row_out)
+
+    pd.DataFrame(results).to_json(outfile, orient="records", lines=True)
+    print(f"Results written to {outfile}")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Run self-refine on object counting")
+    parser.add_argument(
+        "--model",
+        default=DEFAULT_MODEL,
+        help=f"OpenRouter model ID (default: {DEFAULT_MODEL})",
+    )
+    parser.add_argument(
+        "--input_file",
+        default="data/tasks/object_counting/object_counting.jsonl",
+        help="Input JSONL file with 'input' and 'target' fields",
+    )
+    parser.add_argument(
+        "--output_file",
+        default="data/tasks/object_counting/output.jsonl",
+        help="Where to write the output JSONL",
+    )
+    parser.add_argument(
+        "--max_attempts",
+        type=int,
+        default=DEFAULT_MAX_ATTEMPTS,
+        help=f"Max self-refine iterations per sample (default: {DEFAULT_MAX_ATTEMPTS})",
+    )
+    parser.add_argument(
+        "--n_samples",
+        type=int,
+        default=DEFAULT_N_SAMPLES,
+        help="Number of samples to process (default: all)",
+    )
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) > 2:
-        run_over_data(
-            input_file=sys.argv[1],
-            max_attempts=int(sys.argv[2]),
-            outfile=sys.argv[3],
-        )
-    else:
-        input_text = sys.argv[1]
-        max_attempts = 5
-        all_answers_to_scores = iterative_object_counting(
-            input_text=input_text,
-            max_attempts=max_attempts,
-        )
-        res = []
-        for answer, info in all_answers_to_scores.items():
-            res.append(f"{answer} [score: {info['total_score']}]\n{info['scores']}")
-        print("\n ------ \n".join(res))
+    args = parse_args()
+    print(f"Model : {args.model}")
+    print(f"Input : {args.input_file}")
+    print(f"Output: {args.output_file}")
+    print(f"Max attempts: {args.max_attempts}")
+    print(f"N samples   : {args.n_samples or 'all'}")
+    run_over_data(
+        input_file=args.input_file,
+        max_attempts=args.max_attempts,
+        outfile=args.output_file,
+        engine=args.model,
+        n_samples=args.n_samples,
+    )
