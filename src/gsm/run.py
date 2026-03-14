@@ -52,7 +52,10 @@ def iterative_gsm(question: str, max_attempts: int, feedback_type: str, temperat
 def fix_gsm(gsm_task_file: str, max_attempts: int, outfile: str, feedback_type: str, temperature: float, engine: str = DEFAULT_ENGINE):
 
 
-    slow_programs_df = pd.read_json(gsm_task_file, lines=True, orient="records")
+    try:
+        slow_programs_df = pd.read_json(gsm_task_file, lines=True, orient="records")
+    except ValueError:
+        slow_programs_df = pd.read_json(gsm_task_file, orient="records")
     slow_programs_df["run_logs"] = None
     results = []
     for i, row in tqdm(slow_programs_df.iterrows(), total=len(slow_programs_df)):
