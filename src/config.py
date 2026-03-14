@@ -83,9 +83,14 @@ def load_config(config_path: str = None, task_name: str = None) -> dict:
     # Set env vars from config so api_wrapper picks them up
     os.environ.setdefault("API_BASE_URL", config["api"]["base_url"])
     api_key_env = config["api"].get("api_key_env", "OPENROUTER_API_KEY")
-    api_key = os.environ.get(api_key_env, "")
-    if api_key:
-        os.environ.setdefault("API_KEY", api_key)
+    # api_key_env can be either an env var name OR the key itself
+    if api_key_env.startswith("sk-"):
+        # It's the actual key, not an env var name
+        os.environ["API_KEY"] = api_key_env
+    else:
+        api_key = os.environ.get(api_key_env, "")
+        if api_key:
+            os.environ.setdefault("API_KEY", api_key)
 
     _config = config
     return config
