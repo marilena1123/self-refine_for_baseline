@@ -84,7 +84,19 @@ class BBHFeedback(Prompt):
         )
         feedback_text = openai_api.OpenaiAPIWrapper.get_first_response(output).strip()
         is_correct = self.check_correct(feedback_text)
+        self.update_prompt(question, answer, feedback_text)
         return {"feedback": feedback_text, "is_correct": is_correct}
+
+    def update_prompt(self, question: str, answer: str, feedback: str):
+        """Append this (question, answer, feedback) as a new few-shot example.
+        Matches the dynamic prompt updating pattern used by existing tasks
+        (e.g., src/gsm/feedback.py:update_prompt)."""
+        new_example = (
+            f"Q: {question}\n"
+            f"Proposed answer: {answer}\n\n"
+            f"{feedback}{self.inter_example_sep}"
+        )
+        self.prompt = f"{self.prompt}{new_example}"
 
     def check_correct(self, feedback: str) -> bool:
         feedback_lower = feedback.lower()

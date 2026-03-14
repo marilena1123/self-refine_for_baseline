@@ -2,14 +2,36 @@ api:
   base_url: "https://openrouter.ai/api/v1"
   api_key_env: "OPENROUTER_API_KEY"  # name of env var containing your API key
 
-model:
+defaults:
   engine: "google/gemini-2.0-flash-001"  # any OpenRouter model ID
   temperature: 0.7
   max_tokens: 512
-
-task:
-  name: "bbh_object_counting"  # task to run
-  # data_file: "data/tasks/bbh_object_counting/data.jsonl"  # auto-derived from name if omitted
   max_attempts: 4
-  feedback_type: "rich"
-  outfile: "outputs/results.jsonl"
+
+# Per-task settings (override defaults above)
+# Just change data_file to point to your local JSON files
+tasks:
+  bbh_object_counting:
+    data_file: "data/tasks/bbh_object_counting/data.jsonl"
+    outfile: "outputs/bbh_object_counting_results.jsonl"
+  bbh_disambiguation:
+    data_file: "data/tasks/bbh_disambiguation/data.jsonl"
+    outfile: "outputs/bbh_disambiguation_results.jsonl"
+  bbh_snarks:
+    data_file: "data/tasks/bbh_snarks/data.jsonl"
+    outfile: "outputs/bbh_snarks_results.jsonl"
+  gsm:
+    data_file: "data/tasks/gsm/gsm.jsonl"
+    temperature: 0.0
+    outfile: "outputs/gsm_results.jsonl"
+  acronym:
+    data_file: "data/tasks/acronyms/acronyms.tsv"
+    max_attempts: 5
+    outfile: "outputs/acronym_results.jsonl"
+  commongen:
+    data_file: "data/tasks/commongen/commongen_hard.jsonl"
+    outfile: "outputs/commongen_results.jsonl"
+  pie:
+    data_file: "data/tasks/pie/codenet-python-test-1k.jsonl"
+    temperature: 0.0
+    outfile: "outputs/pie_results.jsonl"
