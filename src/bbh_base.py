@@ -185,22 +185,46 @@ def run_bbh_task(
     """Generic runner for BBH tasks."""
     data = _load_task_data(task_file)
     results = []
+    correct_direct = 0
+    correct_refined = 0
+    has_target = "target" in data.columns
+
+    print(f"\nLoaded {len(data)} examples from {task_file}")
+    print(f"Max refinement attempts: {max_attempts}")
+    print(f"Engine: {task_init.engine}")
+    print("-" * 60)
 
     for i, row in tqdm(data.iterrows(), total=len(data)):
         row_dict = row.to_dict()
         question = row["input"]
+        target = str(row["target"]).strip().lower() if has_target else None
+        question_preview = question[:70] + "..." if len(question) > 70 else question
         log = []
 
         try:
+            # Stage 1: Init
             answer = task_init(question=question)
             log.append({"attempt": 0, "answer": answer})
+            print(f"\n[{i+1}/{len(data)}] {question_preview}")
+            print(f"  INIT answer: {answer}", end="")
+            if target:
+                match = answer.strip().lower() == target
+                correct_direct += int(match)
+                print(f"  {'[correct]' if match else '[wrong, target=' + target + ']'}")
+            else:
+                print()
 
+            # Stage 2-3: Feedback + Iterate loop
             for attempt in range(1, max_attempts):
                 fb_result = task_feedback(question=question, answer=answer)
                 log[-1]["feedback"] = fb_result["feedback"]
 
                 if fb_result["is_correct"]:
+                    print(f"  FEEDBACK (attempt {attempt}): correct -> STOP")
                     break
+
+                feedback_preview = fb_result["feedback"][:80] + "..." if len(fb_result["feedback"]) > 80 else fb_result["feedback"]
+                print(f"  FEEDBACK (attempt {attempt}): incorrect -> refining...")
 
                 answer = task_iterate(
                     question=question,
@@ -208,20 +232,47 @@ def run_bbh_task(
                     feedback=fb_result["feedback"],
                 )
                 log.append({"attempt": attempt, "answer": answer})
+                print(f"  REFINED answer: {answer}", end="")
+                if target:
+                    match = answer.strip().lower() == target
+                    print(f"  {'[correct]' if match else '[wrong]'}")
+                else:
+                    print()
 
             row_dict["run_logs"] = log
             row_dict["generated_answer_direct"] = log[0]["answer"]
             row_dict["generated_answer_ours"] = log[-1]["answer"]
             results.append(row_dict)
 
+            if has_target:
+                correct_refined += int(log[-1]["answer"].strip().lower() == target)
+
+            # Running accuracy
+            if has_target and len(results) > 0:
+                print(f"  Running accuracy: direct={correct_direct}/{len(results)} ({correct_direct/len(results)*100:.1f}%) | refined={correct_refined}/{len(results)} ({correct_refined/len(results)*100:.1f}%)")
+
+            # Checkpoint every 10 examples
             if i % 10 == 0 and i > 0:
                 pd.DataFrame(results).to_json(outfile + f".checkpoint_{i}.jsonl", orient="records", lines=True)
+                print(f"  [checkpoint saved: {outfile}.checkpoint_{i}.jsonl]")
 
         except Exception as e:
-            print(f"Error on example {i}: {e}")
+            print(f"  ERROR: {e}")
             row_dict["error"] = str(e)
             results.append(row_dict)
 
+    # Final summary
+    print("\n" + "=" * 60)
+    print(f"DONE: {len(results)} examples processed")
+    if has_target:
+        n = len([r for r in results if "error" not in r])
+        print(f"Direct accuracy:  {correct_direct}/{n} ({correct_direct/n*100:.1f}%)" if n > 0 else "")
+        print(f"Refined accuracy: {correct_refined}/{n} ({correct_refined/n*100:.1f}%)" if n > 0 else "")
+    errors = len([r for r in results if "error" in r])
+    if errors:
+        print(f"Errors: {errors}")
+    print(f"Results saved to: {outfile}")
+    print("=" * 60)
+
     pd.DataFrame(results).to_json(outfile, orient="records", lines=True)
-    print(f"Results saved to {outfile} ({len(results)} examples)")
     return results
