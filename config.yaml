@@ -1,37 +1,26 @@
 api:
   base_url: "https://openrouter.ai/api/v1"
-  api_key_env: "OPENROUTER_API_KEY"  # name of env var containing your API key
+  api_key_env: "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"  # name of env var containing your API key
 
 defaults:
-  engine: "google/gemini-2.0-flash-001"  # any OpenRouter model ID
-  temperature: 0.7
+  engine: "meta-llama/llama-3.1-70b-instruct"  # any OpenRouter model ID
+  temperature: 0.1
   max_tokens: 512
-  max_attempts: 4
+  max_attempts: 3
 
 # Per-task settings (override defaults above)
 # Just change data_file to point to your local JSON files
 tasks:
   bbh_object_counting:
-    data_file: "data/tasks/bbh_object_counting/data.jsonl"
-    outfile: "outputs/bbh_object_counting_results.jsonl"
+    data_file: "/home/mzoumpoulidi/Desktop/AthenaRC/research_idea/comparison_datasets/object_counting_final.json"
+    outfile: "outputs/self_refine_bbh_object_counting_llama_31_70b_results.jsonl"
   bbh_disambiguation:
-    data_file: "data/tasks/bbh_disambiguation/data.jsonl"
-    outfile: "outputs/bbh_disambiguation_results.jsonl"
+    data_file: "/home/mzoumpoulidi/Desktop/AthenaRC/research_idea/comparison_datasets/disambiguation_qa_final_all.json"
+    outfile: "outputs/self_refine_bbh_disambiguation_llama_31_70b_results.jsonl"
   bbh_snarks:
-    data_file: "data/tasks/bbh_snarks/data.jsonl"
-    outfile: "outputs/bbh_snarks_results.jsonl"
+    data_file: "/home/mzoumpoulidi/Desktop/AthenaRC/research_idea/comparison_datasets/gsm_250.json"
+    outfile: "outputs/self_refine_bbh_snarks_llama_31_70b_results.jsonl"
   gsm:
-    data_file: "data/tasks/gsm/gsm.jsonl"
-    temperature: 0.0
-    outfile: "outputs/gsm_results.jsonl"
-  acronym:
-    data_file: "data/tasks/acronyms/acronyms.tsv"
-    max_attempts: 5
-    outfile: "outputs/acronym_results.jsonl"
-  commongen:
-    data_file: "data/tasks/commongen/commongen_hard.jsonl"
-    outfile: "outputs/commongen_results.jsonl"
-  pie:
-    data_file: "data/tasks/pie/codenet-python-test-1k.jsonl"
-    temperature: 0.0
-    outfile: "outputs/pie_results.jsonl"
+    data_file: "/home/mzoumpoulidi/Desktop/AthenaRC/research_idea/comparison_datasets/snarks_final_all.json"
+    temperature: 0.1
+    outfile: "outputs/self_refine_gsm_llama_31_70b_results.jsonl"
