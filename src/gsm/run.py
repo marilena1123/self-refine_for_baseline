@@ -7,24 +7,22 @@ from src.gsm.feedback import GSMFeedback
 
 from src.utils import retry_parse_fail_prone_cmd
 
-CODEX = "code-davinci-002"
-# GPT3 = "text-davinci-003"
-ENGINE = CODEX
+DEFAULT_ENGINE = "code-davinci-002"
 
 
 @retry_parse_fail_prone_cmd
-def iterative_gsm(question: str, max_attempts: int, feedback_type: str, temperature: float):
+def iterative_gsm(question: str, max_attempts: int, feedback_type: str, temperature: float, engine: str = DEFAULT_ENGINE):
 
     # initialize all the required components
 
     # generation of the first fast version
-    task_init = GSMInit(engine=ENGINE, prompt_examples="data/prompt/gsm/init.txt", temperature=temperature)
+    task_init = GSMInit(engine=engine, prompt_examples="data/prompt/gsm/init.txt", temperature=temperature)
 
     # getting feedback
     if feedback_type == "naive":
         raise NotImplementedError
     else:
-        task_feedback = GSMFeedback(engine=ENGINE, prompt_examples="data/prompt/gsm/feedback.txt", temperature=0.7)
+        task_feedback = GSMFeedback(engine=engine, prompt_examples="data/prompt/gsm/feedback.txt", temperature=0.7)
 
 
     n_attempts = 0
@@ -51,7 +49,7 @@ def iterative_gsm(question: str, max_attempts: int, feedback_type: str, temperat
     return log
 
 
-def fix_gsm(gsm_task_file: str, max_attempts: int, outfile: str, feedback_type: str, temperature: float):
+def fix_gsm(gsm_task_file: str, max_attempts: int, outfile: str, feedback_type: str, temperature: float, engine: str = DEFAULT_ENGINE):
 
 
     slow_programs_df = pd.read_json(gsm_task_file, lines=True, orient="records")
@@ -60,7 +58,7 @@ def fix_gsm(gsm_task_file: str, max_attempts: int, outfile: str, feedback_type: 
     for i, row in tqdm(slow_programs_df.iterrows(), total=len(slow_programs_df)):
         row_copy = row.to_dict()
         try:
-            run_logs = iterative_gsm(question=row["input"], max_attempts=max_attempts, feedback_type=feedback_type, temperature=temperature)
+            run_logs = iterative_gsm(question=row["input"], max_attempts=max_attempts, feedback_type=feedback_type, temperature=temperature, engine=engine)
             row_copy["run_logs"] = run_logs
             row_copy["generated_answer_ours"] = run_logs[-1]["solution_fixed"]
             row_copy["generated_answer_direct"] = run_logs[0]["solution_curr"]
@@ -103,5 +101,5 @@ if __name__ == "__main__":
         args.add_argument("--feedback_type", type=str, default="rich")
         args.add_argument("--temperature", type=float, default=0.0)
         args = args.parse_args()
-        args.outfile = f"{args.outfile}.fb_{args.feedback_type}.temp_{args.temperature}.engine_{ENGINE}.jsonl"
+        args.outfile = f"{args.outfile}.fb_{args.feedback_type}.temp_{args.temperature}.engine_{DEFAULT_ENGINE}.jsonl"
         fix_gsm(gsm_task_file=args.gsm_task_file, max_attempts=args.max_attempts, outfile=args.outfile, feedback_type=args.feedback_type, temperature=args.temperature)

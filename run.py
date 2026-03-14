@@ -63,6 +63,15 @@ def main():
             engine=config["model"]["engine"],
             temperature=config["model"]["temperature"],
         )
+    elif task_name == "gsm":
+        run_func(
+            gsm_task_file=config["task"]["data_file"],
+            max_attempts=config["task"]["max_attempts"],
+            outfile=config["task"]["outfile"],
+            feedback_type=config["task"].get("feedback_type", "rich"),
+            temperature=config["model"]["temperature"],
+            engine=config["model"]["engine"],
+        )
     else:
         # Existing tasks have varied signatures — try common patterns
         print(f"Note: Existing task '{task_name}' may need task-specific args.")
