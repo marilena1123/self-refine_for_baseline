@@ -87,8 +87,14 @@ Okay, let's use this feedback to improve the answer.
         )
         response = openai_api.OpenaiAPIWrapper.get_first_response(output)
 
-        new_input = response.split("Input:")[1].strip().split("\n")[0].strip()
-        new_answer = response.split("Answer:")[1].strip().split("\n")[0].strip()
+        if "Input:" in response:
+            new_input = response.split("Input:")[1].strip().split("\n")[0].strip()
+        else:
+            new_input = list(answers_to_scores.values())[-1][0]
+        if "Answer:" in response:
+            new_answer = response.split("Answer:")[1].strip().split("\n")[0].strip()
+        else:
+            new_answer = response.strip().split("\n")[0].strip()
 
         return new_input, new_answer
 

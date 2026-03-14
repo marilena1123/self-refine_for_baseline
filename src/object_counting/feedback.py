@@ -60,7 +60,8 @@ Answer: {answer}"""
             temperature=0.7,
         )
         generated_feedback = openai_api.OpenaiAPIWrapper.get_first_response(output)
-        generated_feedback = generated_feedback.split("Scores:")[1].strip()
+        if "Scores:" in generated_feedback:
+            generated_feedback = generated_feedback.split("Scores:")[1].strip()
         generated_feedback = generated_feedback.split("#")[0].strip()
         return generated_feedback
 
