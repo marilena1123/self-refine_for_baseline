@@ -1,4 +1,25 @@
 import traceback
+import pandas as pd
+
+
+def read_data(filepath: str, n_samples: int = None) -> pd.DataFrame:
+    """Read a dataset that is either a JSON array or newline-delimited JSON (JSONL).
+
+    Detection is based on the first non-whitespace character of the file:
+      '[' → JSON array  (pd.read_json with orient='records')
+      '{' → JSONL       (pd.read_json with lines=True)
+    """
+    with open(filepath) as f:
+        first_char = f.read(1)
+
+    if first_char == "[":
+        df = pd.read_json(filepath, orient="records")
+    else:
+        df = pd.read_json(filepath, orient="records", lines=True)
+
+    if n_samples is not None:
+        df = df.head(n_samples)
+    return df
 
 class Prompt:
     def __init__(

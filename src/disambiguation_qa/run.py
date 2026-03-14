@@ -1,11 +1,10 @@
 import re
 import argparse
-import pandas as pd
 
 from src.disambiguation_qa.task_init import DisambiguationQATaskInit
 from src.disambiguation_qa.task_iterate import DisambiguationQATaskIterate
 from src.disambiguation_qa.feedback import DisambiguationQAFeedback
-from src.utils import retry_parse_fail_prone_cmd
+from src.utils import retry_parse_fail_prone_cmd, read_data
 from config import DEFAULT_MODEL, DEFAULT_MAX_ATTEMPTS, DEFAULT_N_SAMPLES
 
 
@@ -68,9 +67,7 @@ def run_over_data(
     engine: str,
     n_samples: int = None,
 ):
-    data = pd.read_json(input_file, orient="records", lines=True)
-    if n_samples is not None:
-        data = data.head(n_samples)
+    data = read_data(input_file, n_samples=n_samples)
 
     results = []
     for _, row in data.iterrows():
