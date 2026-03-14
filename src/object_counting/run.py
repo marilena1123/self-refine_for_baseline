@@ -23,7 +23,7 @@ def iterative_object_counting(input_text: str, max_attempts: int, engine: str) -
     n_attempts = 0
     answers_to_scores = {}
     all_answers_to_scores = {}
-    best_score_so_far = 0
+    best_score_so_far = -1
 
     print(f"{n_attempts} INIT> {input_text}")
 
