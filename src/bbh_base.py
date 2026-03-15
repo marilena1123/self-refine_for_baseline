@@ -100,7 +100,26 @@ class BBHFeedback(Prompt):
 
     def check_correct(self, feedback: str) -> bool:
         feedback_lower = feedback.lower()
-        return "the answer is correct" in feedback_lower or "this is correct" in feedback_lower
+        # Check for "incorrect" indicators first (since "incorrect" contains "correct")
+        incorrect_phrases = [
+            "the answer is incorrect", "this is incorrect",
+            "the answer is wrong", "this is wrong",
+            "not correct", "isn't correct", "is not correct",
+        ]
+        for phrase in incorrect_phrases:
+            if phrase in feedback_lower:
+                return False
+        # Check for "correct" indicators
+        correct_phrases = [
+            "the answer is correct", "this is correct",
+            "the answer is right", "this is right",
+            "correctly", "is correct",
+        ]
+        for phrase in correct_phrases:
+            if phrase in feedback_lower:
+                return True
+        # Default: assume incorrect so refinement continues
+        return False
 
 
 class BBHTaskIterate(Prompt):
@@ -228,8 +247,9 @@ def run_bbh_task(
                     print(f"  FEEDBACK (attempt {attempt}): correct -> STOP")
                     break
 
-                feedback_preview = fb_result["feedback"][:80] + "..." if len(fb_result["feedback"]) > 80 else fb_result["feedback"]
+                feedback_tail = fb_result["feedback"].strip()[-120:]
                 print(f"  FEEDBACK (attempt {attempt}): incorrect -> refining...")
+                print(f"    feedback tail: ...{feedback_tail}")
 
                 answer = task_iterate(
                     question=question,
