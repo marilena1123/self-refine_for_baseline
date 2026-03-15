@@ -149,6 +149,11 @@ class BBHTaskIterate(Prompt):
         return answer.strip()
 
 
+def _normalize_answer(answer: str) -> str:
+    """Normalize a BBH answer for comparison: strip whitespace, parens, lowercase."""
+    return re.sub(r"[()\s]", "", answer).lower()
+
+
 def _load_task_data(task_file: str) -> pd.DataFrame:
     """Load task data from JSON (array) or JSONL (line-delimited) format."""
     import json
@@ -197,7 +202,7 @@ def run_bbh_task(
     for i, row in tqdm(data.iterrows(), total=len(data)):
         row_dict = row.to_dict()
         question = row["input"]
-        target = str(row["target"]).strip().lower() if has_target else None
+        target = _normalize_answer(str(row["target"])) if has_target else None
         question_preview = question[:70] + "..." if len(question) > 70 else question
         log = []
 
@@ -208,7 +213,7 @@ def run_bbh_task(
             print(f"\n[{i+1}/{len(data)}] {question_preview}")
             print(f"  INIT answer: {answer}", end="")
             if target:
-                match = answer.strip().lower() == target
+                match = _normalize_answer(answer) == target
                 correct_direct += int(match)
                 print(f"  {'[correct]' if match else '[wrong, target=' + target + ']'}")
             else:
@@ -234,7 +239,7 @@ def run_bbh_task(
                 log.append({"attempt": attempt, "answer": answer})
                 print(f"  REFINED answer: {answer}", end="")
                 if target:
-                    match = answer.strip().lower() == target
+                    match = _normalize_answer(answer) == target
                     print(f"  {'[correct]' if match else '[wrong]'}")
                 else:
                     print()
@@ -245,7 +250,7 @@ def run_bbh_task(
             results.append(row_dict)
 
             if has_target:
-                correct_refined += int(log[-1]["answer"].strip().lower() == target)
+                correct_refined += int(_normalize_answer(log[-1]["answer"]) == target)
 
             # Running accuracy
             if has_target and len(results) > 0:
