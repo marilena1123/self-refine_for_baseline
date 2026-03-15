@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 from tqdm import tqdm
 
@@ -8,6 +9,8 @@ from src.gsm.feedback import GSMFeedback
 from src.utils import retry_parse_fail_prone_cmd
 
 DEFAULT_ENGINE = "code-davinci-002"
+
+logger = logging.getLogger(__name__)
 
 
 @retry_parse_fail_prone_cmd
@@ -33,15 +36,18 @@ def iterative_gsm(question: str, max_attempts: int, feedback_type: str, temperat
 
         if n_attempts == 0:
             solution = task_init(solution=question)
+            logger.info("  Init solution generated (%d chars)", len(solution))
 
         fb_and_maybe_soln = task_feedback(solution=solution)
-        
+
 
         log.append({"attempt": n_attempts, "solution_curr": solution, "solution_fixed": fb_and_maybe_soln["solution"], "feedback": fb_and_maybe_soln["feedback"]})
 
         if "it is correct" in fb_and_maybe_soln["feedback"].lower():
+            logger.info("  Attempt %d: feedback says CORRECT, stopping", n_attempts)
             break
 
+        logger.info("  Attempt %d: feedback says needs fix", n_attempts)
         solution = fb_and_maybe_soln["solution"]
 
         n_attempts += 1
@@ -51,27 +57,44 @@ def iterative_gsm(question: str, max_attempts: int, feedback_type: str, temperat
 
 def fix_gsm(gsm_task_file: str, max_attempts: int, outfile: str, feedback_type: str, temperature: float, engine: str = DEFAULT_ENGINE):
 
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%H:%M:%S",
+    )
 
     try:
         slow_programs_df = pd.read_json(gsm_task_file, lines=True, orient="records")
     except ValueError:
         slow_programs_df = pd.read_json(gsm_task_file, orient="records")
+
+    total = len(slow_programs_df)
+    logger.info("Loaded %d questions from %s", total, gsm_task_file)
+    logger.info("Output: %s | max_attempts: %d | engine: %s", outfile, max_attempts, engine)
+
     slow_programs_df["run_logs"] = None
     results = []
-    for i, row in tqdm(slow_programs_df.iterrows(), total=len(slow_programs_df)):
+    successes = 0
+    failures = 0
+    for i, row in tqdm(slow_programs_df.iterrows(), total=total):
         row_copy = row.to_dict()
+        question_preview = row["input"][:80].replace("\n", " ")
+        logger.info("[%d/%d] %s...", i + 1, total, question_preview)
         try:
             run_logs = iterative_gsm(question=row["input"], max_attempts=max_attempts, feedback_type=feedback_type, temperature=temperature, engine=engine)
             row_copy["run_logs"] = run_logs
             row_copy["generated_answer_ours"] = run_logs[-1]["solution_fixed"]
             row_copy["generated_answer_direct"] = run_logs[0]["solution_curr"]
             results.append(row_copy)
+            successes += 1
+            logger.info("  Done (%d attempts used)", len(run_logs))
             if i % 10 == 0:
                 pd.DataFrame(results).to_json(outfile + f".{i}.jsonl", orient="records", lines=True)
         except Exception as e:
-            # raise e
-            pass
+            failures += 1
+            logger.error("  FAILED: %s: %s", type(e).__name__, e)
     pd.DataFrame(results).to_json(outfile, orient="records", lines=True)
+    logger.info("Finished: %d/%d succeeded, %d failed. Results saved to %s", successes, total, failures, outfile)
     return results
 
 
