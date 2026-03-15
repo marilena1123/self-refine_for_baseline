@@ -1,10 +1,18 @@
 from importlib import reload
+import sys
 import pandas as pd
 from tqdm import tqdm
 from contextlib import contextmanager
 import signal
 from glob import glob
 import os
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Ensure CWD is on sys.path so temp_result.py can be imported
+if os.getcwd() not in sys.path:
+    sys.path.insert(0, os.getcwd())
 
 # from https://stackoverflow.com/questions/492519/timeout-on-a-function-call
 @contextmanager
@@ -95,6 +103,7 @@ def evaluate_code_prompt(path, num_gsm: int = None):
                 attempt_to_acc_[iter_idx] = 0
                 prev_accuracy = is_corr
             except Exception as e:
+                logger.debug("  [%d] attempt %d error: %s: %s", idx, iter_idx, type(e).__name__, e)
                 continue
 
         attempt_to_acc.append(attempt_to_acc_)
@@ -143,6 +152,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--path", type=str, default="data/quco/quco_test.jsonl")
     parser.add_argument("--num_gsm", type=int, default=None, help="Total number of questions (default: auto-detect from data)")
+    parser.add_argument("--debug", action="store_true", help="Show per-question errors")
     args = parser.parse_args()
+
+    logging.basicConfig(
+        level=logging.DEBUG if args.debug else logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%H:%M:%S",
+    )
 
     evaluate_code_prompt(args.path, num_gsm=args.num_gsm)
