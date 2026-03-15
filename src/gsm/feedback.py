@@ -41,9 +41,20 @@ class GSMFeedback(Prompt):
         if "### END" in entire_output:
             entire_output = entire_output.split("### END")[0]
 
-        improved_soln = entire_output.split("def solution():")[1]
-        feedback = entire_output.split("def solution():")[0]
-        improved_soln = "def solution():" + improved_soln.rstrip()
+        # Strip markdown code fences if present
+        import re
+        entire_output = re.sub(r"```python\s*", "", entire_output)
+        entire_output = re.sub(r"```\s*", "", entire_output)
+
+        # Find the LAST def solution(): which is the corrected one
+        parts = entire_output.split("def solution():")
+        if len(parts) < 2:
+            # Model didn't produce a rewritten function; return original solution
+            improved_soln = solution
+            feedback = entire_output.strip()
+        else:
+            improved_soln = "def solution():" + parts[-1].rstrip()
+            feedback = "def solution():".join(parts[:-1])
         self.update_prompt(solution=solution, improved_soln=improved_soln, feedback=feedback)
         return {"solution": improved_soln, "feedback": feedback}
 

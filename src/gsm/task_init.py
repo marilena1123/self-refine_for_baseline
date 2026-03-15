@@ -30,14 +30,28 @@ class GSMInit(Prompt):
         output = openai_api.OpenaiAPIWrapper.call(
             prompt=generation_query,
             engine=self.engine,
-            max_tokens=300,
+            max_tokens=512,
             stop_token=self.inter_example_sep,
             temperature=self.temperature,
         )
 
         solution_code = openai_api.OpenaiAPIWrapper.get_first_response(output)
+        solution_code = _clean_code_output(solution_code)
 
         return solution_code.strip()
+
+
+def _clean_code_output(text: str) -> str:
+    """Strip markdown code blocks and extract the def solution() function."""
+    import re
+    # Remove markdown code fences
+    text = re.sub(r"```python\s*", "", text)
+    text = re.sub(r"```\s*", "", text)
+    # Extract from def solution() onward if there's preamble text
+    match = re.search(r"(def solution\(\).*)", text, re.DOTALL)
+    if match:
+        text = match.group(1)
+    return text
 
 
 def test():

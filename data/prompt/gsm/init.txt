@@ -1,3 +1,7 @@
+You are a math problem solver. Given a math question, write a Python function called `solution()` that computes and returns the answer. Output ONLY the Python function, no explanations or markdown formatting.
+
+Here are some examples:
+
 # Q: Jason had 20 lollipops. He gave Denny some lollipops. Now Jason has 12 lollipops. How many lollipops did Jason give to Denny?
 # solution using Python:
 
@@ -37,5 +41,6 @@ def solution():
     result = total_toys
     return result
 
+Now solve the following question. Output ONLY the Python function, nothing else.
 
 
