@@ -29,12 +29,15 @@ def read_json(path):
     task_df = pd.DataFrame(rows)
     return task_df
 
-def evaluate_code_prompt(path, num_gsm: int = 1319):
+def evaluate_code_prompt(path, num_gsm: int = None):
     data = read_json(path)
     if "question" not in data.columns:
         data["question"] = data["input"]
     if "answer" not in data.columns:
         data["answer"] = data["target"]
+
+    if num_gsm is None:
+        num_gsm = len(data)
 
     attempt_to_acc = []
     reports = []  # Step 1
@@ -139,6 +142,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--path", type=str, default="data/quco/quco_test.jsonl")
+    parser.add_argument("--num_gsm", type=int, default=None, help="Total number of questions (default: auto-detect from data)")
     args = parser.parse_args()
-    
-    evaluate_code_prompt(args.path)
+
+    evaluate_code_prompt(args.path, num_gsm=args.num_gsm)
