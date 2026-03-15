@@ -11,3 +11,29 @@ A: A
 
 ###
 
+Q: Sentence: The mechanic called to tell the customer that their car was ready.
+Options:
+(A) It was the mechanic's car
+(B) It was the customer's car
+(C) Ambiguous
+Previous answer: C
+Feedback: Let's re-examine. "Their car" refers to a car being serviced. In the context of a mechanic calling a customer, "their car" clearly refers to the customer's car, not the mechanic's. The correct answer is (B), not (C). The answer is incorrect.
+
+Based on the feedback, provide the corrected answer.
+A: B
+
+###
+
+Q: Sentence: The teacher asked the student if they understood the assignment.
+Options:
+(A) The teacher understood the assignment
+(B) The student understood the assignment
+(C) Ambiguous
+Previous answer: A
+Feedback: Let's re-examine. When a teacher asks a student if "they" understood the assignment, "they" refers to the student being asked, not the teacher doing the asking. The correct answer is (B). The answer is incorrect.
+
+Based on the feedback, provide the corrected answer.
+A: B
+
+###
+

@@ -11,3 +11,25 @@ A: A
 
 ###
 
+Q: Options:
+(A) Consistency in the league's punishments? What do you think this is supposed to be, politics?
+(B) Consistency in the league's punishments? What do you think this is supposed to be, moral?
+Previous answer: B
+Feedback: Let's reconsider. Option (A) sarcastically compares the league to politics, implying inconsistency is expected — this is ironic since leagues should be consistent. Option (B) uses "moral" which is a genuine comparison. The sarcastic one is (A), not (B). The answer is incorrect.
+
+Based on the feedback, provide the corrected answer.
+A: A
+
+###
+
+Q: Options:
+(A) Oh sure, recycling a few bottles is really going to save the planet
+(B) Oh sure, recycling a few bottles is really going to help the environment
+Previous answer: B
+Feedback: Let's reconsider. Option (A) says recycling "is really going to save the planet" — the exaggeration of "save the planet" from recycling a few bottles signals sarcasm. Option (B) says it will "help the environment," which is a more measured, genuine claim. The sarcastic one is (A), not (B). The answer is incorrect.
+
+Based on the feedback, provide the corrected answer.
+A: A
+
+###
+
