@@ -88,15 +88,8 @@ class BBHFeedback(Prompt):
         return {"feedback": feedback_text, "is_correct": is_correct}
 
     def update_prompt(self, question: str, answer: str, feedback: str):
-        """Append this (question, answer, feedback) as a new few-shot example.
-        Matches the dynamic prompt updating pattern used by existing tasks
-        (e.g., src/gsm/feedback.py:update_prompt)."""
-        new_example = (
-            f"Q: {question}\n"
-            f"Proposed answer: {answer}\n\n"
-            f"{feedback}{self.inter_example_sep}"
-        )
-        self.prompt = f"{self.prompt}{new_example}"
+        """No-op: use static few-shot prompt to avoid exceeding context limits."""
+        pass
 
     def check_correct(self, feedback: str) -> bool:
         feedback_lower = feedback.lower()
